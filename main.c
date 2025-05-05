@@ -1,6 +1,11 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 int main(void){
-  printf("Hello World!");
+  printf("What number?");
+  int d;
+  scanf("%d", &d);
+  printf("%d", d);
+  return 0;
 }
 

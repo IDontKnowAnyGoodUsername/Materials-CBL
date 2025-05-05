@@ -1,11 +1,14 @@
-#!/bin/bash
-# compile.sh
+# Makefile
 
-gcc "$1" -o "${1%.c}.out"
+CC = gcc
+CFLAGS = -Wall
+TARGET = main
 
-if [ $? -eq 0 ]; then
-  echo "Compilation successful. Running program:"
-  ./"${1%.c}.out"
-else
-  echo "Compilation failed."
-fi
+$(TARGET): main.c
+	$(CC) $(CFLAGS) main.c -o $(TARGET)
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -f $(TARGET)
