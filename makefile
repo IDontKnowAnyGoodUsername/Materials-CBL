@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -I./tinkerforge
-LDFLAGS = -lws2_32
+LDFLAGS = -lws2_32 -ladvapi32
 TARGET = main
 
 SRCS = src/main.c tinkerforge/ip_connection.c tinkerforge/brick_silent_stepper.c 

@@ -23,10 +23,11 @@ int main(void) {
         printf("WSAStartup failed: %d\n", WSAGetLastError());
         return -1;
     }
-
     // Create IP connection
     IPConnection ipcon;
     ipcon_create(&ipcon);
+
+
 
     // Create device object
     SilentStepper ss;
@@ -38,6 +39,7 @@ int main(void) {
         return 1;
     }
     // Don't use device before ipcon is connected
+    printf("line 42");
 
     silent_stepper_set_motor_current(&ss, 800); // 800 mA
     silent_stepper_set_step_configuration(&ss, SILENT_STEPPER_STEP_RESOLUTION_8,
