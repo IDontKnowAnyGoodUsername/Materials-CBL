@@ -1,11 +1,12 @@
-# Makefile
-
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -I./tinkerforge
+LDFLAGS = -lws2_32
 TARGET = main
 
-$(TARGET): main.c
-	$(CC) $(CFLAGS) main.c -o $(TARGET)
+SRCS = src/main.c tinkerforge/ip_connection.c tinkerforge/brick_silent_stepper.c 
+
+$(TARGET): $(SRCS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)
