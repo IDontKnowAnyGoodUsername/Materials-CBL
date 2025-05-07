@@ -4,11 +4,10 @@
 
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#include <windows.h>
 
 #include "ip_connection.h"
 #include "brick_silent_stepper.h"
-
-//#pragma comment(lib, "Ws2_32.lib")
 
 #define HOST "localhost"
 #define PORT 4223
@@ -32,6 +31,8 @@ int main(void) {
     // Create device object
     SilentStepper ss;
     silent_stepper_create(&ss, UID, &ipcon);
+
+printf("35");
 
     // Connect to brickd
     if(ipcon_connect(&ipcon, HOST, PORT) < 0) {

@@ -31,6 +31,7 @@
 	#include <ws2tcpip.h>
 	#include <wincrypt.h>
 	#include <process.h>
+	#include <windows.h>
 #else
 	#include <fcntl.h>
 	#include <sys/types.h>
@@ -2064,7 +2065,7 @@ static int ipcon_connect_unlocked(IPConnectionPrivate *ipcon_p, bool is_auto_rec
 	hints.ai_family = AF_INET;
 	hints.ai_socktype = SOCK_STREAM;
 
-	if (getaddrinfo(ipcon_p->host, service, &hints, &resolved) != 0) {
+	/*if (getaddrinfo(ipcon_p->host, service, &hints, &resolved) != 0) {
 		// destroy callback thread
 		if (!is_auto_reconnect) {
 			ipcon_exit_callback_thread(ipcon_p->callback);
@@ -2072,7 +2073,7 @@ static int ipcon_connect_unlocked(IPConnectionPrivate *ipcon_p, bool is_auto_rec
 		}
 
 		return E_HOSTNAME_INVALID;
-	}
+	}*/
 
 	tmp = (Socket *)malloc(sizeof(Socket));
 
@@ -2086,7 +2087,7 @@ static int ipcon_connect_unlocked(IPConnectionPrivate *ipcon_p, bool is_auto_rec
 
 		//destroy socket
 		free(tmp);
-		freeaddrinfo(resolved);
+		//freeaddrinfo(resolved);
 
 		return E_NO_STREAM_SOCKET;
 	}
@@ -2101,12 +2102,12 @@ static int ipcon_connect_unlocked(IPConnectionPrivate *ipcon_p, bool is_auto_rec
 		// destroy socket
 		socket_destroy(tmp);
 		free(tmp);
-		freeaddrinfo(resolved);
+		//freeaddrinfo(resolved);
 
 		return E_NO_CONNECT;
 	}
 
-	freeaddrinfo(resolved);
+	//freeaddrinfo(resolved);
 
 	ipcon_p->socket = tmp;
 	++ipcon_p->socket_id;
