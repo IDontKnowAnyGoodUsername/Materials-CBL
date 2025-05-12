@@ -2087,7 +2087,7 @@ static int ipcon_connect_unlocked(IPConnectionPrivate *ipcon_p, bool is_auto_rec
 
 		//destroy socket
 		free(tmp);
-		//freeaddrinfo(resolved);
+		freeaddrinfo(resolved);
 
 		return E_NO_STREAM_SOCKET;
 	}
