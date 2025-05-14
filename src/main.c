@@ -52,26 +52,37 @@ int main(void){
     silent_stepper_set_speed_ramping(&ss, 500, 5000);
 
     silent_stepper_enable(&ss); // Enable motor power
-    silent_stepper_set_steps(&ss, 60000); // Drive 60000 steps forward
+    
+    //------------------------------------------------------------------
+    
+    char cmd;
 
-    int ret_steps = 0;
-    uint16_t cur_vel = 0;
-    int32_t pos = 0;
+    while(cmd != 'q'){
+        printf("Command?\n");
+        scanf("%c", &cmd);
 
-
-    silent_stepper_get_remaining_steps(&ss, &ret_steps);
-
-    while(silent_stepper_is_moving(&ss)){
-        silent_stepper_get_current_position(&ss, &pos);
-        silent_stepper_get_remaining_steps(&ss, &ret_steps);
-        silent_stepper_get_current_velocity(&ss, &cur_vel);
-        printf("\rRemaining steps:%d      Current velocity: %d      Current position: %d", ret_steps, cur_vel, pos);
-        fflush(stdout);
-        Sleep(1000);
+        switch(cmd){
+            case 't':
+            printf("Target?\n");
+            int  target;
+            scanf("%d", &target);
+            silent_stepper_target_info(&ss, target);
+            break;
+            case '0':
+            silent_stepper_zero_info(&ss);
+            break;
+            case 'p':
+            Sleep(1);
+            int pos;
+            silent_stepper_get_current_position(&ss, &pos);
+            printf("%d", pos);
+            break;
+        }
     }
+
+    printf("Shutting down");
     
-    printf("Press key to exit\n");
-    
+    //--------------------------------------------------------
 
     // Stop motor before disabling motor power
     silent_stepper_stop(&ss); // Request motor stop

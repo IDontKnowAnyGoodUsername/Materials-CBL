@@ -39,6 +39,9 @@ void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_po
         usleep(1000*1000);
         #endif
     }
+
+    printf("\n");
+
 }
 
 void silent_stepper_zero_info(SilentStepper *silent_stepper){
@@ -64,5 +67,7 @@ void silent_stepper_zero_info(SilentStepper *silent_stepper){
         usleep(1000*1000);
         #endif
     }
+
+    printf("\n");
 
 }
