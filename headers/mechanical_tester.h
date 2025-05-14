@@ -28,7 +28,7 @@ bool silent_stepper_is_moving(SilentStepper *silent_stepper);
  * @param param2 Target position.
  * 
  */
-void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos)
+void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos);
 
 
 /**
@@ -36,5 +36,6 @@ void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_po
  * 
  * @param param1 Silent stepper.
  */
+void silent_stepper_zero_info(SilentStepper *silent_stepper);
 
 #endif // MECHANICAL_TESTER_H

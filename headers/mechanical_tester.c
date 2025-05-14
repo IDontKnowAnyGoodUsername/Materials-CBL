@@ -12,7 +12,7 @@ bool silent_stepper_is_moving(SilentStepper *silent_stepper){
 }
 
 
-void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos){
+void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos) {
     int32_t current_pos = 0;
     int32_t necessary_steps;
     int32_t pos;
@@ -51,7 +51,7 @@ void silent_stepper_zero_info(SilentStepper *silent_stepper){
     
     silent_stepper_set_steps(silent_stepper, -current_pos);
 
-    while(silent_stepper_is_moving(silent_stepper)){
+    while(silent_stepper_is_moving(silent_stepper)) {
         silent_stepper_get_current_position(silent_stepper, &pos);
         silent_stepper_get_remaining_steps(silent_stepper, &ret_steps);
         silent_stepper_get_current_velocity(silent_stepper, &cur_vel);
@@ -64,5 +64,5 @@ void silent_stepper_zero_info(SilentStepper *silent_stepper){
         usleep(1000*1000);
         #endif
     }
-    
+
 }

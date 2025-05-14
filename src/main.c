@@ -17,7 +17,7 @@
 
 
 
-int main(void) {
+int main(void){
 
     WSADATA wsaData;
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
@@ -43,8 +43,8 @@ int main(void) {
 
 
     silent_stepper_set_motor_current(&ss, 800); // 800 mA
-    silent_stepper_set_step_configuration(&ss, SILENT_STEPPER_STEP_RESOLUTION_32,
-                                          true); // 1/32 steps (interpolated). //Higher number => smaller steps. USE CAUTION
+    silent_stepper_set_step_configuration(&ss, SILENT_STEPPER_STEP_RESOLUTION_16,
+                                          true); // 1/x steps (interpolated). //Higher number => smaller steps. USE CAUTION
     silent_stepper_set_max_velocity(&ss, 5000); // Velocity 2000 steps/s
 
     // Slow acceleration (500 steps/s^2),
@@ -86,3 +86,4 @@ int main(void) {
     WSACleanup();
     return 0;
 }
+
