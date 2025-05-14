@@ -1,11 +1,13 @@
 CC = gcc
-CFLAGS = -Wall -I./tinkerforge
-LDFLAGS = -lws2_32 -ladvapi32
+
+CFLAGS = -Wall -D_WIN32 -I./headers -IC:/MinGW/include
+LDFLAGS = -LC:/MinGW/lib -lws2_32 -ladvapi32
+
 TARGET = main
-SRCS = src/main.c tinkerforge/ip_connection.c tinkerforge/brick_silent_stepper.c
+SRCS = src/main.c headers/ip_connection.c headers/brick_silent_stepper.c headers/mechanical_tester.c
 
 $(TARGET): $(SRCS)
-	$(CC)	$(CFLAGS)	$(SRCS)	-o	$(TARGET)	$(LDFLAGS)
+	$(CC) $(CFLAGS) $(SRCS) -o $(TARGET) $(LDFLAGS)
 
 run: $(TARGET)
 	./$(TARGET)

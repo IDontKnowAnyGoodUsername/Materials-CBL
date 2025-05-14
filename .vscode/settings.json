@@ -6,5 +6,10 @@
       "path": "C:\\msys64\\usr\\bin\\bash.exe",
       "args": ["--login", "-i"]
     }
+  },
+  "files.associations": {
+    "compare": "c",
+    "cstdint": "c",
+    "mechanical_tester.h": "c"
   }
 }
