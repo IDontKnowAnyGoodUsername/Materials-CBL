@@ -10,6 +10,7 @@
 #include "ip_connection.h"
 #include "brick_silent_stepper.h"
 #include "mechanical_tester.h"
+#include "bricklet_load_cell.h"
 
 #define HOST "localhost"
 #define PORT 4223
@@ -59,7 +60,7 @@ int main(void){
 
     while(cmd != 'q'){
         printf("Command?\n");
-        scanf("%c", &cmd);
+        scanf(" %c", &cmd);
 
         switch(cmd){
             case 't':
@@ -75,7 +76,7 @@ int main(void){
             Sleep(1);
             int pos;
             silent_stepper_get_current_position(&ss, &pos);
-            printf("%d", pos);
+            printf("%d\n", pos);
             break;
         }
     }
