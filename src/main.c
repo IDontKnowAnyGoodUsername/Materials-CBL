@@ -10,11 +10,12 @@
 #include "ip_connection.h"
 #include "brick_silent_stepper.h"
 #include "mechanical_tester.h"
-#include "bricklet_load_cell.h"
+#include "bricklet_load_cell_v2.h"
 
 #define HOST "localhost"
 #define PORT 4223
-#define UID "5VGrE3" // Change XXYYZZ to the UID of your Silent Stepper Brick
+#define UID_stepper "5VGrE3" // Change XXYYZZ to the UID of your Silent Stepper Brick
+#define UID_load "29ia"
 
 
 
@@ -33,7 +34,10 @@ int main(void){
 
     // Create device object
     SilentStepper ss;
-    silent_stepper_create(&ss, UID, &ipcon);
+    silent_stepper_create(&ss, UID_stepper, &ipcon);
+
+    LoadCellV2 lc;
+	load_cell_v2_create(&lc, UID_load, &ipcon);
 
     // Connect to brickd
     if(ipcon_connect(&ipcon, HOST, PORT) < 0) {
@@ -54,9 +58,12 @@ int main(void){
 
     silent_stepper_enable(&ss); // Enable motor power
     
+
+
     //------------------------------------------------------------------
     
     char cmd;
+    int32_t weight;
 
     while(cmd != 'q'){
         printf("Command?\n");
