@@ -63,7 +63,6 @@ int main(void){
     //------------------------------------------------------------------
     
     char cmd;
-    int32_t weight;
 
     while(cmd != 'q'){
         printf("Command?\n");
@@ -74,10 +73,10 @@ int main(void){
             printf("Target?\n");
             int  target;
             scanf("%d", &target);
-            silent_stepper_target_info(&ss, target);
+            silent_stepper_target_info(&ss, target, &lc);
             break;
             case '0':
-            silent_stepper_zero_info(&ss);
+            silent_stepper_zero_info(&ss, &lc);
             break;
             case 'p':
             Sleep(1);

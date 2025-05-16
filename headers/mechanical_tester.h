@@ -9,6 +9,7 @@
 
 #include "ip_connection.h"
 #include "brick_silent_stepper.h"
+#include "bricklet_load_cell_v2.h"
 
 // Checks if motor has remaining steps. No solution found 
 /**
@@ -28,7 +29,7 @@ bool silent_stepper_is_moving(SilentStepper *silent_stepper);
  * @param param2 Target position.
  * 
  */
-void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos);
+void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_pos, LoadCellV2 *lc);
 
 
 /**
@@ -36,6 +37,6 @@ void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_po
  * 
  * @param param1 Silent stepper.
  */
-void silent_stepper_zero_info(SilentStepper *silent_stepper);
+void silent_stepper_zero_info(SilentStepper *silent_stepper, LoadCellV2 *lc);
 
 #endif // MECHANICAL_TESTER_H
