@@ -71,7 +71,7 @@
                 printf("Target?\n");
                 int  target;
                 scanf("%d", &target);
-                silent_stepper_target_info(&ss, target, &lc);
+                silent_stepper_target_info(&ss, target, &lc);     //positive steps moves the arrowhead UP!
                 break;
                 case '0':
                 silent_stepper_zero_info(&ss, &lc);
