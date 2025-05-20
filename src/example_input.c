@@ -35,8 +35,15 @@ int main(void) {
 	printf("Channel 2: %s\n", value[2] ? "true" : "false");
 	printf("Channel 3: %s\n", value[3] ? "true" : "false");
 
-	printf("Press key to exit\n");
-	getchar();
+	char cmd;
+
+	while(cmd != 'q'){
+		io4_v2_get_value(&io, value);
+		printf("Channel 0: %s\n", value[0] ? "true" : "false");
+		scanf(" %c", &cmd);
+	}
+
+
 	io4_v2_destroy(&io);
 	ipcon_destroy(&ipcon); // Calls ipcon_disconnect internally
 	return 0;
