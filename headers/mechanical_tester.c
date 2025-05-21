@@ -32,7 +32,7 @@ void silent_stepper_target_info(SilentStepper *silent_stepper, int32_t target_po
         silent_stepper_get_remaining_steps(silent_stepper, &ret_steps);
         silent_stepper_get_current_velocity(silent_stepper, &cur_vel);
         load_cell_v2_get_weight(lc, &weight);
-        printf("\rRemaining steps:%d      Current velocity: %d      Current position: %d    Weight: %d g", ret_steps, cur_vel, pos, weight);
+        printf("\rRemaining steps:%d      Current velocity: %d      Current position: %d    Weight: %d g ", ret_steps, cur_vel, pos, weight);
         fflush(stdout);
         
         #ifdef _WIN32
@@ -62,7 +62,7 @@ void silent_stepper_zero_info(SilentStepper *silent_stepper, LoadCellV2 *lc){
         silent_stepper_get_remaining_steps(silent_stepper, &ret_steps);
         silent_stepper_get_current_velocity(silent_stepper, &cur_vel);
         load_cell_v2_get_weight(lc, &weight);
-        printf("\rRemaining steps:%d      Current velocity: %d      Current position: %d    Weight: %d g", ret_steps, cur_vel, pos, weight);
+        printf("\rRemaining steps:%d      Current velocity: %d      Current position: %d    Weight: %d g ", ret_steps, cur_vel, pos, weight);
         fflush(stdout);
         
         #ifdef _WIN32
