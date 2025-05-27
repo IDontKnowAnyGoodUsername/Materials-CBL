@@ -49,8 +49,10 @@ int main(void) {
 	printf("Channel 2: %s\n", value[2] ? "true" : "false");
 	printf("Channel 3: %s\n", value[3] ? "true" : "false");
 
+	/*
 	bool button[BITSIZE];
 	char cmd;
+	
 	while(cmd != 'q'){
 		for(int i = 0; i<BITSIZE; i++){
 			io4_v2_get_value(&io, value);
@@ -63,6 +65,13 @@ int main(void) {
 		printf("Shutting down\n");
 		scanf(" %c", &cmd);
 	}
+		*/
+
+		for(int i = 0; i <1000; i++){
+			io4_v2_get_value(&io, value);
+			printf("%d", value[0]);
+
+		}
 
 	io4_v2_destroy(&io);
 	ipcon_destroy(&ipcon); // Calls ipcon_disconnect internally

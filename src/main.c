@@ -46,7 +46,7 @@
 
 
         silent_stepper_set_motor_current(&ss, 800); // 800 mA
-        silent_stepper_set_step_configuration(&ss, SILENT_STEPPER_STEP_RESOLUTION_16,
+        silent_stepper_set_step_configuration(&ss, SILENT_STEPPER_STEP_RESOLUTION_8,
                                             true); // 1/x steps (interpolated). //Higher number => smaller steps. USE CAUTION
         silent_stepper_set_max_velocity(&ss, 5000); // Velocity 2000 steps/s
 
