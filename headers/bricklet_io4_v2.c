@@ -1,5 +1,5 @@
 /* ***********************************************************
- * This file was automatically generated on 2024-02-27.      *
+ * This file was automatically generated on 2025-05-27.      *
  *                                                           *
  * C/C++ Bindings Version 2.1.34                             *
  *                                                           *
@@ -26,6 +26,8 @@ typedef void (*InputValue_CallbackFunction)(uint8_t channel, bool changed, bool 
 typedef void (*AllInputValue_CallbackFunction)(bool changed[4], bool value[4], void *user_data);
 
 typedef void (*MonoflopDone_CallbackFunction)(uint8_t channel, bool value, void *user_data);
+
+typedef void (*CaptureInput_CallbackFunction)(uint8_t data[64], void *user_data);
 
 #if defined _MSC_VER || defined __BORLANDC__
 	#pragma pack(push)
@@ -199,6 +201,27 @@ typedef struct {
 	uint8_t channel;
 	uint8_t value;
 } ATTRIBUTE_PACKED MonoflopDone_Callback;
+
+typedef struct {
+	PacketHeader header;
+	uint8_t enable;
+	uint16_t time_between_capture;
+} ATTRIBUTE_PACKED SetCaptureInputCallbackConfiguration_Request;
+
+typedef struct {
+	PacketHeader header;
+} ATTRIBUTE_PACKED GetCaptureInputCallbackConfiguration_Request;
+
+typedef struct {
+	PacketHeader header;
+	uint8_t enable;
+	uint16_t time_between_capture;
+} ATTRIBUTE_PACKED GetCaptureInputCallbackConfiguration_Response;
+
+typedef struct {
+	PacketHeader header;
+	uint8_t data[64];
+} ATTRIBUTE_PACKED CaptureInput_Callback;
 
 typedef struct {
 	PacketHeader header;
@@ -380,11 +403,32 @@ static void io4_v2_callback_wrapper_monoflop_done(DevicePrivate *device_p, Packe
 	callback_function(callback->channel, unpacked_value, user_data);
 }
 
+static void io4_v2_callback_wrapper_capture_input(DevicePrivate *device_p, Packet *packet) {
+	CaptureInput_CallbackFunction callback_function;
+	void *user_data;
+	CaptureInput_Callback *callback;
+
+	if (packet->header.length != sizeof(CaptureInput_Callback)) {
+		return; // silently ignoring callback with wrong length
+	}
+
+	callback_function = (CaptureInput_CallbackFunction)device_p->registered_callbacks[DEVICE_NUM_FUNCTION_IDS + IO4_V2_CALLBACK_CAPTURE_INPUT];
+	user_data = device_p->registered_callback_user_data[DEVICE_NUM_FUNCTION_IDS + IO4_V2_CALLBACK_CAPTURE_INPUT];
+	callback = (CaptureInput_Callback *)packet;
+	(void)callback; // avoid unused variable warning
+
+	if (callback_function == NULL) {
+		return;
+	}
+
+	callback_function(callback->data, user_data);
+}
+
 void io4_v2_create(IO4V2 *io4_v2, const char *uid, IPConnection *ipcon) {
 	IPConnectionPrivate *ipcon_p = ipcon->p;
 	DevicePrivate *device_p;
 
-	device_create(io4_v2, uid, ipcon_p, 2, 0, 0, IO4_V2_DEVICE_IDENTIFIER);
+	device_create(io4_v2, uid, ipcon_p, 2, 0, 1, IO4_V2_DEVICE_IDENTIFIER);
 
 	device_p = io4_v2->p;
 
@@ -404,6 +448,8 @@ void io4_v2_create(IO4V2 *io4_v2, const char *uid, IPConnection *ipcon) {
 	device_p->response_expected[IO4_V2_FUNCTION_GET_EDGE_COUNT_CONFIGURATION] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	device_p->response_expected[IO4_V2_FUNCTION_SET_PWM_CONFIGURATION] = DEVICE_RESPONSE_EXPECTED_FALSE;
 	device_p->response_expected[IO4_V2_FUNCTION_GET_PWM_CONFIGURATION] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
+	device_p->response_expected[IO4_V2_FUNCTION_SET_CAPTURE_INPUT_CALLBACK_CONFIGURATION] = DEVICE_RESPONSE_EXPECTED_TRUE;
+	device_p->response_expected[IO4_V2_FUNCTION_GET_CAPTURE_INPUT_CALLBACK_CONFIGURATION] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	device_p->response_expected[IO4_V2_FUNCTION_GET_SPITFP_ERROR_COUNT] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	device_p->response_expected[IO4_V2_FUNCTION_SET_BOOTLOADER_MODE] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
 	device_p->response_expected[IO4_V2_FUNCTION_GET_BOOTLOADER_MODE] = DEVICE_RESPONSE_EXPECTED_ALWAYS_TRUE;
@@ -420,6 +466,7 @@ void io4_v2_create(IO4V2 *io4_v2, const char *uid, IPConnection *ipcon) {
 	device_p->callback_wrappers[IO4_V2_CALLBACK_INPUT_VALUE] = io4_v2_callback_wrapper_input_value;
 	device_p->callback_wrappers[IO4_V2_CALLBACK_ALL_INPUT_VALUE] = io4_v2_callback_wrapper_all_input_value;
 	device_p->callback_wrappers[IO4_V2_CALLBACK_MONOFLOP_DONE] = io4_v2_callback_wrapper_monoflop_done;
+	device_p->callback_wrappers[IO4_V2_CALLBACK_CAPTURE_INPUT] = io4_v2_callback_wrapper_capture_input;
 
 	ipcon_add_device(ipcon_p, device_p);
 }
@@ -902,6 +949,61 @@ int io4_v2_get_pwm_configuration(IO4V2 *io4_v2, uint8_t channel, uint32_t *ret_f
 
 	*ret_frequency = leconvert_uint32_from(response.frequency);
 	*ret_duty_cycle = leconvert_uint16_from(response.duty_cycle);
+
+	return ret;
+}
+
+int io4_v2_set_capture_input_callback_configuration(IO4V2 *io4_v2, bool enable, uint16_t time_between_capture) {
+	DevicePrivate *device_p = io4_v2->p;
+	SetCaptureInputCallbackConfiguration_Request request;
+	int ret;
+
+	ret = device_check_validity(device_p);
+
+	if (ret < 0) {
+		return ret;
+	}
+
+	ret = packet_header_create(&request.header, sizeof(request), IO4_V2_FUNCTION_SET_CAPTURE_INPUT_CALLBACK_CONFIGURATION, device_p->ipcon_p, device_p);
+
+	if (ret < 0) {
+		return ret;
+	}
+
+	request.enable = enable ? 1 : 0;
+	request.time_between_capture = leconvert_uint16_to(time_between_capture);
+
+	ret = device_send_request(device_p, (Packet *)&request, NULL, 0);
+
+	return ret;
+}
+
+int io4_v2_get_capture_input_callback_configuration(IO4V2 *io4_v2, bool *ret_enable, uint16_t *ret_time_between_capture) {
+	DevicePrivate *device_p = io4_v2->p;
+	GetCaptureInputCallbackConfiguration_Request request;
+	GetCaptureInputCallbackConfiguration_Response response;
+	int ret;
+
+	ret = device_check_validity(device_p);
+
+	if (ret < 0) {
+		return ret;
+	}
+
+	ret = packet_header_create(&request.header, sizeof(request), IO4_V2_FUNCTION_GET_CAPTURE_INPUT_CALLBACK_CONFIGURATION, device_p->ipcon_p, device_p);
+
+	if (ret < 0) {
+		return ret;
+	}
+
+	ret = device_send_request(device_p, (Packet *)&request, (Packet *)&response, sizeof(response));
+
+	if (ret < 0) {
+		return ret;
+	}
+
+	*ret_enable = response.enable != 0;
+	*ret_time_between_capture = leconvert_uint16_from(response.time_between_capture);
 
 	return ret;
 }

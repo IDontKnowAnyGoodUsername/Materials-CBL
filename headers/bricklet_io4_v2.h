@@ -1,5 +1,5 @@
 /* ***********************************************************
- * This file was automatically generated on 2024-02-27.      *
+ * This file was automatically generated on 2025-05-27.      *
  *                                                           *
  * C/C++ Bindings Version 2.1.34                             *
  *                                                           *
@@ -111,6 +111,16 @@ typedef Device IO4V2;
 /**
  * \ingroup BrickletIO4V2
  */
+#define IO4_V2_FUNCTION_SET_CAPTURE_INPUT_CALLBACK_CONFIGURATION 20
+
+/**
+ * \ingroup BrickletIO4V2
+ */
+#define IO4_V2_FUNCTION_GET_CAPTURE_INPUT_CALLBACK_CONFIGURATION 21
+
+/**
+ * \ingroup BrickletIO4V2
+ */
 #define IO4_V2_FUNCTION_GET_SPITFP_ERROR_COUNT 234
 
 /**
@@ -206,6 +216,19 @@ typedef Device IO4V2;
  * (the value after the monoflop).
  */
 #define IO4_V2_CALLBACK_MONOFLOP_DONE 19
+
+/**
+ * \ingroup BrickletIO4V2
+ *
+ * Signature: \code void callback(uint8_t data[64], void *user_data) \endcode
+ * 
+ * Returns a stream of IO-4 inputs encoded as bitmasks. There are two samples per 8 bit (i.e. 128 samples per callback). Each sample has a time distance as defined by {@link io4_v2_set_capture_input_callback_configuration}.
+ * 
+ * The data starts to stream when the callback is enabled and stops after it is disabled again.
+ * 
+ * .. versionadded:: 2.0.5$nbsp;(Plugin)
+ */
+#define IO4_V2_CALLBACK_CAPTURE_INPUT 22
 
 
 /**
@@ -622,6 +645,28 @@ int io4_v2_set_pwm_configuration(IO4V2 *io4_v2, uint8_t channel, uint32_t freque
  * Returns the PWM configuration as set by {@link io4_v2_set_pwm_configuration}.
  */
 int io4_v2_get_pwm_configuration(IO4V2 *io4_v2, uint8_t channel, uint32_t *ret_frequency, uint16_t *ret_duty_cycle);
+
+/**
+ * \ingroup BrickletIO4V2
+ *
+ * If `enable` is set to true, the {@link IO4_V2_CALLBACK_CAPTURE_INPUT} callback is started. The sample frequency is given with the `time between capture` parameter (in us).
+ * For example: A time between capture of 50us corresponds to a sampling frequency of 20kHz. The maximum sampling frquency is 50kHz.
+ * 
+ * Note: When the {@link IO4_V2_CALLBACK_CAPTURE_INPUT} callback is activated, all other functions of the IO-4 Bricklet 2.0 stop working.
+ * 
+ * .. versionadded:: 2.0.5$nbsp;(Plugin)
+ */
+int io4_v2_set_capture_input_callback_configuration(IO4V2 *io4_v2, bool enable, uint16_t time_between_capture);
+
+/**
+ * \ingroup BrickletIO4V2
+ *
+ * Returns the callback configuration as set by
+ * {@link io4_v2_set_capture_input_callback_configuration}.
+ * 
+ * .. versionadded:: 2.0.5$nbsp;(Plugin)
+ */
+int io4_v2_get_capture_input_callback_configuration(IO4V2 *io4_v2, bool *ret_enable, uint16_t *ret_time_between_capture);
 
 /**
  * \ingroup BrickletIO4V2

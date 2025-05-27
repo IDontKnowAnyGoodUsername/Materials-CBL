@@ -10,6 +10,31 @@
 #define UID "27it" // Change XYZ to the UID of your IO-4 Bricklet 2.0"
 
 #define BITSIZE 4
+#define MAX_LOG_ENTRIES 1000
+
+typedef struct {
+    uint32_t timestamp_ms;
+    uint8_t channel;
+    bool value;
+} InputLogEntry;
+
+InputLogEntry log_buffer[MAX_LOG_ENTRIES];
+int log_index = 0;
+
+uint32_t millis() {
+    struct timespec spec;
+    clock_gettime(CLOCK_MONOTONIC, &spec);
+    return (uint32_t)(spec.tv_sec * 1000 + spec.tv_nsec / 1000000);
+}
+
+void input_value_callback(uint8_t channel, bool changed, bool value, void *user_data) {
+    if (log_index >= MAX_LOG_ENTRIES) return;
+
+    InputLogEntry *entry = &log_buffer[log_index++];
+    entry->timestamp_ms = millis();
+    entry->channel = channel;
+    entry->value = value;
+}
 
 int binaryToDecimal(bool values[4]){
 	int result = 0;
@@ -44,82 +69,29 @@ int main(void) {
 		return 1;
 	}
 
-	for(int i = 0; i <100; i++){
-		io4_v2_get_value(&io, value);
-		printf("%d, %d\n", value[0],value[1]);
+	io4_v2_register_callback(&io, IO4_V2_CALLBACK_INPUT_VALUE, (void(*)(void))input_value_callback, NULL);
+
+	for(uint8_t channel = 0; channel <2; channel++){
+		io4_v2_set_input_value_callback_configuration(&io, channel, 100, false);
 	}
+
+	printf("Logging for 10 seconds\n");
+	Sleep(10000);
+
+	printf("\n--- Input Log ---\n");
+    for (int i = 0; i < log_index; i++) {
+        printf("Time: %ums | Channel: %u | Value: %u\n",
+               log_buffer[i].timestamp_ms,
+               log_buffer[i].channel,
+               log_buffer[i].value);
+    }
+
 	/*printf("Channel 0: %s\n", value[0] ? "true" : "false");
 	printf("Channel 1: %s\n", value[1] ? "true" : "false");
 	printf("Channel 2: %s\n", value[2] ? "true" : "false");
 	printf("Channel 3: %s\n", value[3] ? "true" : "false");
 	*/
-	/*
-	bool button[BITSIZE];
-	char cmd;
-	
-	while(cmd != 'q'){
-		for(int i = 0; i<BITSIZE; i++){
-			io4_v2_get_value(&io, value);
-			button[i] = value[0];
-			printf("%d", button[i]);
-			printf(" ");
-			Sleep(1000);
-		}
-		printf("\n%d\n", binaryToDecimal(button));
-		printf("Shutting down\n");
-		scanf(" %c", &cmd);
-	}
-		*/
-	/*int pulse_counter = 0;
-		for (int i = 0; i < 300; i++) {
-    	int counter = 0;
 
-    	// Wait for clock to go LOW
-    	do {
-        	io4_v2_get_value(&io, value);
-        	Sleep(1);  // 0.1 ms = avoid CPU hammering
-    	} while (value[1] == 1);
-    	// Clock is LOW, measure how long it's LOW
-    	do {
-        	io4_v2_get_value(&io, value);
-        	Sleep(1);  // 0.1 ms
-        	counter++;
-    	} while (value[1] == 0);
-
-   	 // Clock went HIGH = rising edge = sample data
-    	if (counter > 5) {
-    	    printf("   %d pulses,(clock low for ~%d * 100us)\n", pulse_counter, counter);
-			pulse_counter =0;
-    	}
-
-    	// Sample data at the moment clock goes high
-    	printf("%d", value[0]);
-	}*/
-	bool string[300];
-	for(int i = 0; i<300; i++){
-		io4_v2_get_value(&io, value);
-		string[i] = value[1];
-	}
-	for(int i = 0; i <300; i++){
-		printf("%d", string[i]);
-	}
-
-	/*for(int i = 0; i <50; i++){
-		int zero_time =0;
-		//bool string[300];
-		do{
-			io4_v2_get_value(&io, value);
-			while(value[1]==0){		//wait until high
-				io4_v2_get_value(&io, value);
-				zero_time++;
-			}
-			printf("%d", value[0]);				//sample at edge
-			while(value[1] ==1){	//wait until low
-				io4_v2_get_value(&io, value);
-			}
-		} while (zero_time<8);
-		printf("\n");
-	}*/
 
 	io4_v2_destroy(&io);
 	ipcon_destroy(&ipcon); // Calls ipcon_disconnect internally

@@ -10,6 +10,8 @@
   "files.associations": {
     "compare": "c",
     "cstdint": "c",
-    "mechanical_tester.h": "c"
+    "mechanical_tester.h": "c",
+    "string.h": "c",
+    "bricklet_io4_v2.h": "c"
   }
 }
