@@ -37,7 +37,7 @@ InputLogEntry log_buffer[MAX_LOG_ENTRIES];
 int log_index = 0;
 
 void input_value_callback(uint8_t channel, bool changed, bool value, void *user_data) {
-    if (channel > 1) return; // Skip channels 2 and 3
+    if (channel != 0) return; // Skip channels 2 and 3
     if (log_index >= MAX_LOG_ENTRIES) return;
 
     InputLogEntry *entry = &log_buffer[log_index++];
@@ -63,14 +63,15 @@ int main() {
                              (void (*)(void))input_value_callback, NULL);
 
     // Configure all 4 channels
-    for (uint8_t channel = 0; channel < 4; channel++) {
-        io4_v2_set_input_value_callback_configuration(&io4, channel, 10, false); // 10 ms period
+    for (uint8_t channel = 0; channel < 1; channel++) {
+        io4_v2_set_input_value_callback_configuration(&io4, channel, 0, true); // 0 ms period??
     }
+    
 
-    printf("Logging for 10 seconds...\n");
+    printf("Logging for 1 seconds...\n");
 
     // Use Sleep on Windows
-    Sleep(10000); // 10 seconds in milliseconds
+    Sleep(1000); // 10 seconds in milliseconds
 
     // After logging, print out the values
     printf("\n--- Input Log ---\n");
