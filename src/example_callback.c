@@ -30,8 +30,13 @@ int main(void) {
 
     // Configure callback: enable periodic input monitoring for channels 0-3
     // (100 ms period, value changes trigger callback)
-    io4_v2_set_input_value_callback_configuration(&io4_v2, 0, 100, true);
-    io4_v2_set_input_value_callback_configuration(&io4_v2, 1, 100, true);
+    /*io4_v2_set_input_value_callback_configuration(&io4_v2, 0, 100, true);
+    io4_v2_set_input_value_callback_configuration(&io4_v2, 1, 100, true);*/
+
+    io4_v2_set_capture_input_callback_configuration(&io4_v2, true, 50);
+    Sleep(20);
+    io4_v2_set_capture_input_callback_configuration(&io4_v2, false, 50);
+
 
     // Register the callback function
     io4_v2_register_callback(&io4_v2,
